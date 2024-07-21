@@ -28,24 +28,35 @@
 </template>
 
 <script setup lang="ts">
-import { useCustomers } from '~/composables/customer';
-import { useMessages }
- from '~/composables/states';
-
+import { useMessages } from '~/composables/states';
+import { marked } from 'marked';
+import dompurify from "dompurify";
 
 const newMessage = ref("")
 const messages = useMessages();
-const { customersInitials } = useCustomers();
+const { customerInitials} = useCustomers();
 
-function handleSubmit() {
+async function handleSubmit() {
   messages.value.push({
-      name: customersInitials.value,
+      name: customerInitials.value,
       message: newMessage.value,
       timestamp: new Date().toLocaleString([],{ 
         timeStyle: 'short',
       }),
-      isUser: true
+      isAI: false
     })
   newMessage.value = ""
+
+  const parseMessage = await marked.parse(
+    dompurify.sanitize("**I** am **bold** and *italic*")
+  );
+  messages.value.push({
+      name: "Parawale",
+      message: parseMessage,
+      timestamp: new Date().toLocaleString([],{ 
+        timeStyle: 'short',
+      }),
+      isAI: true
+    })
 }
 </script>

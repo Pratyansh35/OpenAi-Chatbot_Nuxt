@@ -1,6 +1,6 @@
 export interface IMessage{
     name: string;
     message: string;
-    isUser: boolean;
+    isAI: boolean;
     timestamp: String;
 }

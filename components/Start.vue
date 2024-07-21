@@ -33,11 +33,18 @@
 </template>
 
 <script setup lang="ts">
-import { customer } from '~/composables/customer';
 
 const isChatting = useisChatting();
-const { customerName, namehasError } = customer();
-function handleSubmit() {
+const { customerName, namehasError } = useCustomers();
+
+const thread = useCookie("thread-id");
+const run = useCookie("run-id");
+
+async function handleSubmit() {
+  const response = await $fetch("/api/thread");
+  thread.value = response.thread;
+  run.value = response.run;
+  
   isChatting.value = true;
 }
 </script>
