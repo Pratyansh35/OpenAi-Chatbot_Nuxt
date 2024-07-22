@@ -1,5 +1,4 @@
-import thread from "./thread";
-
+import { getLatestMessage } from "../utils/get-message";
 export default defineEventHandler(async (event) => {
     const threadID = getCookie(event, "thread-id");
     const runID = getCookie(event, "run-id");
@@ -7,4 +6,6 @@ export default defineEventHandler(async (event) => {
     if (!threadID || !runID) {
         return;
     }
+
+    return await getLatestMessage(threadID, runID);
 });
