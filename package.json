@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
-    "@types/dompurify": "^3.0.5"
+    "@types/dompurify": "^3.0.5",
+    "@types/node": "^20.14.11"
   }
 }

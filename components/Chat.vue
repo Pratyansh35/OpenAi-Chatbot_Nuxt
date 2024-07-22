@@ -23,7 +23,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
       </svg> 
      </div>
-    <div v-else class="flex flex-col gap-3.5 py-5 px-3 overflow-y-scroll max-h-[400px]">
+    <div ref="container"  class="flex flex-col gap-3.5 py-5 px-3 overflow-y-scroll max-h-[400px]">
       <!-- To flip message use "flex-row-reverse" -->
       <div v-for="message in messages" class="flex items-end gap-3" :class="{ 'flex-row-reverse': !message.isAI }">
         <!-- Profile Image -->
@@ -53,24 +53,45 @@
 
 <script setup lang="ts">
 
+
+
+
 const messages = useMessages();
+const container = ref();
+
+onUpdated(() => {
+  container.value.scrollTop = container.value.scrollHeight;
+});
+ 
 const { customerInitials } = useCustomers();
 
+interface ThreadMessage {
+  role: string;
+  content: {
+    type: string;
+    text: {
+      value: string;
+    };
+  }[];
+  timestamp: string;
+}
 const { pending } = await useFetch("/api/message", {
   lazy: true,
   onResponse({ response }) {
-    const content = response._data.data[0].content[0];
-
-  
+    response._data.data.reverse().forEach((element: ThreadMessage) => {
+      const content = element.content[0];
+      if (content.type != "text") {
+        return;
+      }
       messages.value.push({
-        name: "Parawale AI",
+        name: element.role == "assistant" ? "Parawale AI" : customerInitials.value,
         message: content.text.value,
-        isAI: true,
+        isAI: element.role == "assistant" ? true : false,
         timestamp: new Date().toLocaleTimeString([],
           { timeStyle: "short" }
         )
-      })
-    
+      });
+    });
   }
 
 });
