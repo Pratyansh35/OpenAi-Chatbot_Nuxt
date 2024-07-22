@@ -9,8 +9,8 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss"],
   runtimeConfig: {
     public: {
-      openaiKey: process.env.OPENAI_KEY?.toString(),
-      openaiAssistant: process.env.OPENAI_ASSISTANT?.toString(),
+      OPENAI_KEY: process.env.OPENAI_KEY?.toString(),
+      OPENAI_ASSISTANT: process.env.OPENAI_ASSISTANT?.toString(),
     },
   },
 })

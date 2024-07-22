@@ -1,6 +1,6 @@
 import OpenAI from "openai";
-const openaiKey = useRuntimeConfig().public.openaiKey;
-const openaiAssistant = useRuntimeConfig().public.openaiAssistant;
+const openaiKey = useRuntimeConfig().public.OPENAI_KEY;
+const openaiAssistant = useRuntimeConfig().public.OPENAI_ASSISTANT;
 
 
 
