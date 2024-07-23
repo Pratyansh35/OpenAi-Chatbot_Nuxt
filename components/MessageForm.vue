@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="handleSubmit" class="relative">
-    <fieldset  :disabled="isSubmitting" >
+    <fieldset :disabled="isSubmitting">
       <textarea @keypress.enter.prevent="handleSubmit" v-model.trim="newMessage"
-        class="transition p-4 w-full text-sm border border-slate-300/60 shadow-sm placeholder:text-slate-400/90 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary focus:border-opacity-40 pr-16 rounded-xl resize-none"
+        class="transition p-4 w-full text-sm border border-slate-300 shadow-sm placeholder:text-slate-400 focus:ring-4 focus:ring-primary focus:ring-opacity-20 focus:border-primary pr-16 rounded-xl resize-none"
         placeholder="Enter your message...">
       </textarea>
       <button type="submit"
@@ -18,29 +18,27 @@
 </template>
 
 <script setup lang="ts">
-import { useMessages } from '~/composables/states';
+import { ref } from 'vue';
+import { useMessages} from '~/composables/states';
 import { marked } from 'marked';
-import dompurify from "dompurify";
+import dompurify from 'dompurify';
 
-const newMessage = ref("")
+const newMessage = ref('');
 const messages = useMessages();
 const { customerInitials } = useCustomers();
-const isSubmitting = ref(false)
+const isSubmitting = ref(false);
 
 async function handleSubmit() {
-  isSubmitting.value = true
+  isSubmitting.value = true;
   messages.value.push({
     name: customerInitials.value,
     message: newMessage.value,
-    timestamp: new Date().toLocaleString([], {
-      timeStyle: 'short',
-    }),
+    timestamp: new Date().toLocaleTimeString([], { timeStyle: 'short' }),
     isAI: false
-  })
+  });
 
-  const userMessage = newMessage.value
-  newMessage.value = ""
-
+  const userMessage = newMessage.value;
+  newMessage.value = '';
 
   await $fetch('/api/message', {
     method: 'POST',
@@ -49,23 +47,18 @@ async function handleSubmit() {
     },
     async onResponse({ response }) {
       const content = response._data.data[0].content[0];
+      if (content.type !== 'text') return;
 
-      if (content.type != "text") {
-        return;
-      }
-      const parseMessage = await marked.parse(
-        dompurify.sanitize(content.text.value));
+      const parseMessage = await marked.parse(dompurify.sanitize(content.text.value));
 
       messages.value.push({
-        name: "Parawale AI",
+        name: 'Parawale AI',
         message: parseMessage,
         isAI: true,
-        timestamp: new Date().toLocaleTimeString([],
-          { timeStyle: "short" }
-        )
+        timestamp: new Date().toLocaleTimeString([], { timeStyle: 'short' })
       });
-      isSubmitting.value = false
+      isSubmitting.value = false;
     }
-  })
+  });
 }
 </script>
