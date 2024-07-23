@@ -9,10 +9,10 @@
       </div>
       <div>
         <div class="font-medium truncate max-w-[9rem] md:max-w-none">
-          Parawale AI
+          Pratyansh AI
         </div>
         <div class="text-slate-500 mt-0.5 truncate max-w-[9rem] md:max-w-none">
-          Customer Support Agent
+          Talk to me about anything.
         </div>
       </div>
     </div>
